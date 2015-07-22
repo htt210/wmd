@@ -38,7 +38,7 @@ all: $(WRAPPERS)
 _%.so: %.o %_wrap.o
 	@echo ">>> Linking wrapper library '$(@)'."
 	@echo -n "    "
-	$(LD) -shared -o $@ $^
+	$(LD) -dylib -lpython2.7 -lSystem -macosx_version_min 10.9 -arch x86_64 -o $@ $^
 	@echo
 
 %.o: %.c
