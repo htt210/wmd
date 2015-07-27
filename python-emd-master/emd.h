@@ -29,7 +29,7 @@
 // as arguments to the ground distance callback when building the distance
 // matrix.  Thus, with a Python distance callback, any Python object is fine.
 
-#include "Python.h";
+#include "Python.h"
 typedef PyObject* feature_t;
 /*****************************************************************************/
 
