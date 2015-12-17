@@ -4,14 +4,15 @@ import gensim, pdb, sys, scipy.io as io, numpy as np, pickle, string
 
 # read datasets line by line
 def read_line_by_line(dataset_name,C,model,vec_size):
+
     # get stop words (except for twitter!)
     SW = set()
     for line in open('stop_words.txt'):
         line = line.strip()
         if line != '':
             SW.add(line)
-
     stop = list(SW)
+    print('read {} stop_words'.format(len(SW)))
 
 
     f = open(dataset_name)
@@ -25,7 +26,7 @@ def read_line_by_line(dataset_name,C,model,vec_size):
     remain = np.zeros((num_lines,), dtype=np.object)
     the_words = np.zeros((num_lines,), dtype=np.object)
     for line in f:
-        print '%d out of %d' % (count+1, num_lines)
+        print('processed %d out of %d lines' % (count+1, num_lines))
         line = line.strip()
         line = line.translate(string.maketrans("",""), string.punctuation)
         T = line.split('\t')
@@ -56,7 +57,7 @@ def read_line_by_line(dataset_name,C,model,vec_size):
                     word_order[inner] = word
                     bow_x[inner] += 1
                     F[:,inner] = model[word]
-            except KeyError, e:
+            except KeyError as e:
                 #print 'Key error: "%s"' % str(e)
                 word_order[inner] = ''
             inner = inner + 1
@@ -70,14 +71,13 @@ def read_line_by_line(dataset_name,C,model,vec_size):
     return (X,BOW_X,y,C,the_words)
 
 
-
-
 def main():
     # 0. load word2vec model (trained on Google News)
+    print('loading Word2Vec model...')
     model = gensim.models.Word2Vec.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
     vec_size = 300
 
-   # 1. specify train/test datasets
+    # 1. specify train/test datasets
     train_dataset = sys.argv[1] # e.g.: 'twitter.txt'
     save_file     = sys.argv[2] # e.g.: 'twitter.pk'
     save_file_mat = sys.argv[3] # e.g.: 'twitter.mat'
@@ -93,4 +93,4 @@ def main():
     io.savemat(save_file_mat,mdict={'X': X, 'BOW_X': BOW_X, 'y': y, 'C': C, 'words': words})
 
 if __name__ == "__main__":
-    main()                                                                                             
+    main()
